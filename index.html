@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta de Satisfacción - Restaurante</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <form id="surveyForm" class="survey-form">
+            <h1>Encuesta de Satisfacción</h1>
+
+            <!-- Sección 1: Experiencia General -->
+            <section class="form-section" id="general-experience">
+                <h2>Experiencia General</h2>
+                
+                <div class="form-group">
+                    <label for="overall-experience">¿Cómo calificaría su experiencia en el restaurante?</label>
+                    <div class="rating-scale">
+                        <input type="range" id="overall-experience" name="overall-experience" min="1" max="10" value="5" required>
+                        <div class="rating-value">5</div>
+                    </div>
+                </div>
+
+                <div class="form-group conditional-group" id="improvement-group" style="display: none;">
+                    <label for="improvement">¿Qué podríamos haber hecho para mejorar su experiencia?</label>
+                    <textarea id="improvement" name="improvement" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="nps">¿Qué tan probable es que recomiende nuestro restaurante?</label>
+                    <div class="rating-scale">
+                        <input type="range" id="nps" name="nps" min="0" max="10" value="5" required>
+                        <div class="rating-value">5</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="nps-reason">¿Cuál fue el motivo principal de su calificación anterior?</label>
+                    <textarea id="nps-reason" name="nps-reason" rows="3" required></textarea>
+                </div>
+            </section>
+
+            <!-- Sección 2: Comida y Calidad -->
+            <section class="form-section" id="food-quality">
+                <h2>Comida y Calidad del Producto</h2>
+
+                <div class="form-group">
+                    <label for="food-temperature">¿Cómo calificaría la temperatura de la comida?</label>
+                    <select id="food-temperature" name="food-temperature" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="muy-caliente">Muy caliente</option>
+                        <option value="caliente">Caliente</option>
+                        <option value="tibia">Tibia</option>
+                        <option value="fria">Fría</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="food-quality">¿Cómo calificaría la calidad y el sabor de los alimentos?</label>
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="food-quality" value="5" required>
+                        <label for="star5">★</label>
+                        <input type="radio" id="star4" name="food-quality" value="4">
+                        <label for="star4">★</label>
+                        <input type="radio" id="star3" name="food-quality" value="3">
+                        <label for="star3">★</label>
+                        <input type="radio" id="star2" name="food-quality" value="2">
+                        <label for="star2">★</label>
+                        <input type="radio" id="star1" name="food-quality" value="1">
+                        <label for="star1">★</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="dish-issues">¿Algún plato le pareció insípido, seco o poco atractivo?</label>
+                    <div class="radio-group">
+                        <input type="radio" id="dish-issues-yes" name="dish-issues" value="si">
+                        <label for="dish-issues-yes">Sí</label>
+                        <input type="radio" id="dish-issues-no" name="dish-issues" value="no">
+                        <label for="dish-issues-no">No</label>
+                    </div>
+                </div>
+
+                <div class="form-group conditional-group" id="dish-details-group" style="display: none;">
+                    <label for="dish-details">¿Podría especificar cuál?</label>
+                    <textarea id="dish-details" name="dish-details" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="menu-variety">¿Encontró variedad suficiente en el menú?</label>
+                    <div class="radio-group">
+                        <input type="radio" id="menu-variety-yes" name="menu-variety" value="si">
+                        <label for="menu-variety-yes">Sí</label>
+                        <input type="radio" id="menu-variety-no" name="menu-variety" value="no">
+                        <label for="menu-variety-no">No</label>
+                    </div>
+                </div>
+
+                <div class="form-group conditional-group" id="menu-suggestions-group" style="display: none;">
+                    <label for="menu-suggestions">¿Qué tipo de opciones le gustaría ver?</label>
+                    <textarea id="menu-suggestions" name="menu-suggestions" rows="3"></textarea>
+                </div>
+            </section>
+
+            <!-- Sección 3: Servicio y Atención -->
+            <section class="form-section" id="service">
+                <h2>Servicio y Atención</h2>
+
+                <div class="form-group">
+                    <label for="wait-time-seat">¿Cuánto tiempo tardaron en atenderle después de sentarse?</label>
+                    <select id="wait-time-seat" name="wait-time-seat" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="menos-5">Menos de 5 min</option>
+                        <option value="5-10">5-10 min</option>
+                        <option value="mas-10">Más de 10 min</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="wait-time-food">¿Cuánto tiempo tardó su comida en llegar después de ordenar?</label>
+                    <select id="wait-time-food" name="wait-time-food" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="menos-15">Menos de 15 min</option>
+                        <option value="15-30">15-30 min</option>
+                        <option value="mas-30">Más de 30 min</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="staff-friendliness">¿Cómo calificaría la amabilidad y disposición del personal?</label>
+                    <div class="star-rating">
+                        <input type="radio" id="staff5" name="staff-friendliness" value="5" required>
+                        <label for="staff5">★</label>
+                        <input type="radio" id="staff4" name="staff-friendliness" value="4">
+                        <label for="staff4">★</label>
+                        <input type="radio" id="staff3" name="staff-friendliness" value="3">
+                        <label for="staff3">★</label>
+                        <input type="radio" id="staff2" name="staff-friendliness" value="2">
+                        <label for="staff2">★</label>
+                        <input type="radio" id="staff1" name="staff-friendliness" value="1">
+                        <label for="staff1">★</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="service-issues">¿Hubo algún momento en el que sintió que el servicio no fue adecuado?</label>
+                    <div class="radio-group">
+                        <input type="radio" id="service-issues-yes" name="service-issues" value="si">
+                        <label for="service-issues-yes">Sí</label>
+                        <input type="radio" id="service-issues-no" name="service-issues" value="no">
+                        <label for="service-issues-no">No</label>
+                    </div>
+                </div>
+
+                <div class="form-group conditional-group" id="service-details-group" style="display: none;">
+                    <label for="service-details">¿Podría describir qué ocurrió?</label>
+                    <textarea id="service-details" name="service-details" rows="3"></textarea>
+                </div>
+            </section>
+
+            <!-- Sección 4: Limpieza y Ambiente -->
+            <section class="form-section" id="cleanliness">
+                <h2>Limpieza y Ambiente</h2>
+
+                <div class="form-group">
+                    <label for="cleanliness-rating">¿Cómo encontró la limpieza del restaurante?</label>
+                    <select id="cleanliness-rating" name="cleanliness-rating" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="muy-limpio">Muy limpio</option>
+                        <option value="aceptable">Aceptable</option>
+                        <option value="necesita-mejorar">Necesita mejorar</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ambience">¿El ambiente y la música fueron agradables?</label>
+                    <div class="radio-group">
+                        <input type="radio" id="ambience-yes" name="ambience" value="si">
+                        <label for="ambience-yes">Sí</label>
+                        <input type="radio" id="ambience-no" name="ambience" value="no">
+                        <label for="ambience-no">No</label>
+                    </div>
+                </div>
+
+                <div class="form-group conditional-group" id="ambience-improvement-group" style="display: none;">
+                    <label for="ambience-improvement">¿Qué le gustaría mejorar?</label>
+                    <textarea id="ambience-improvement" name="ambience-improvement" rows="3"></textarea>
+                </div>
+            </section>
+
+            <!-- Sección 5: Quejas y Mejoras -->
+            <section class="form-section" id="complaints">
+                <h2>Quejas y Mejoras</h2>
+
+                <div class="form-group">
+                    <label for="single-improvement">Si pudiera cambiar una sola cosa en su experiencia, ¿qué sería?</label>
+                    <textarea id="single-improvement" name="single-improvement" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="previous-issues">¿Ha tenido experiencias negativas en el restaurante anteriormente?</label>
+                    <div class="radio-group">
+                        <input type="radio" id="previous-issues-yes" name="previous-issues" value="si">
+                        <label for="previous-issues-yes">Sí</label>
+                        <input type="radio" id="previous-issues-no" name="previous-issues" value="no">
+                        <label for="previous-issues-no">No</label>
+                    </div>
+                </div>
+
+                <div class="form-group conditional-group" id="previous-issues-details-group" style="display: none;">
+                    <label for="previous-issues-details">¿Qué aspectos se repitieron?</label>
+                    <textarea id="previous-issues-details" name="previous-issues-details" rows="3"></textarea>
+                </div>
+            </section>
+
+            <button type="submit" class="submit-button">Enviar Encuesta</button>
+        </form>
+
+        <!-- Modal for additional information -->
+        <div class="modal fade" id="guestInfoModal" tabindex="-1" aria-labelledby="guestInfoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="guestInfoModalLabel">Información del Huésped</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="guestInfoForm">
+                    <div class="form-group">
+                        <label for="restaurant-select">Selección de restaurante*</label>
+                        <select id="restaurant-select" name="restaurant-select" required>
+                            <option value="">Seleccione un restaurante</option>
+                            <option value="ALT">ALT</option>
+                            <option value="Sopiro">Sopiro</option>
+                            <option value="ChezRose">ChezRose</option>
+                            <option value="Seishin">Seishin</option>
+                            <option value="Huzur">Huzur</option>
+                            <option value="Miraflores">Miraflores</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="room-number">Número de habitación*</label>
+                        <input type="number" id="room-number" name="room-number" min="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="guest-name">Nombre del huésped*</label>
+                        <input type="text" id="guest-name" name="guest-name" required>
+                    </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Confirmar</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
