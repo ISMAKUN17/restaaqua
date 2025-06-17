@@ -3,270 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encuesta de Satisfacción - Restaurante</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <title>Agregar Nueva Reserva - Gestión de Reservas</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        /* Estilos CSS para esta página */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 600px; /* Ancho más pequeño para formulario */
+            margin: 20px auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1em 0;
+            color: #777;
+            font-size: 0.9em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: calc(100% - 22px); /* Ajuste para padding y border */
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; /* Incluye padding y border en el ancho total */
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #message {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <form id="surveyForm" class="survey-form">
-            <h1>Encuesta de Satisfacción</h1>
+    <header>
+        <h1>Sistema de Reservas</h1>
+        <nav>
+            <ul>
+                <li><a href="add_booking.html">Agregar Reserva</a></li>
+                <li><a href="view_bookings.html">Ver Reservas</a></li>
+                <li><a href="admin_bookings.html">Administrador</a></li>
+            </ul>
+        </nav>
+    </header>
 
-            <!-- Sección 1: Experiencia General -->
-            <section class="form-section" id="general-experience">
-                <h2>Experiencia General</h2>
-                
-                <div class="form-group">
-                    <label for="overall-experience">¿Cómo calificaría su experiencia en el restaurante?</label>
-                    <div class="rating-scale">
-                        <input type="range" id="overall-experience" name="overall-experience" min="1" max="10" value="5" required>
-                        <div class="rating-value">5</div>
-                    </div>
-                </div>
-
-                <div class="form-group conditional-group" id="improvement-group" style="display: none;">
-                    <label for="improvement">¿Qué podríamos haber hecho para mejorar su experiencia?</label>
-                    <textarea id="improvement" name="improvement" rows="3"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="nps">¿Qué tan probable es que recomiende nuestro restaurante?</label>
-                    <div class="rating-scale">
-                        <input type="range" id="nps" name="nps" min="0" max="10" value="5" required>
-                        <div class="rating-value">5</div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="nps-reason">¿Cuál fue el motivo principal de su calificación anterior?</label>
-                    <textarea id="nps-reason" name="nps-reason" rows="3" required></textarea>
-                </div>
-            </section>
-
-            <!-- Sección 2: Comida y Calidad -->
-            <section class="form-section" id="food-quality">
-                <h2>Comida y Calidad del Producto</h2>
-
-                <div class="form-group">
-                    <label for="food-temperature">¿Cómo calificaría la temperatura de la comida?</label>
-                    <select id="food-temperature" name="food-temperature" required>
-                        <option value="">Seleccione una opción</option>
-                        <option value="muy-caliente">Muy caliente</option>
-                        <option value="caliente">Caliente</option>
-                        <option value="tibia">Tibia</option>
-                        <option value="fria">Fría</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="food-quality">¿Cómo calificaría la calidad y el sabor de los alimentos?</label>
-                    <div class="star-rating">
-                        <input type="radio" id="star5" name="food-quality" value="5" required>
-                        <label for="star5">★</label>
-                        <input type="radio" id="star4" name="food-quality" value="4">
-                        <label for="star4">★</label>
-                        <input type="radio" id="star3" name="food-quality" value="3">
-                        <label for="star3">★</label>
-                        <input type="radio" id="star2" name="food-quality" value="2">
-                        <label for="star2">★</label>
-                        <input type="radio" id="star1" name="food-quality" value="1">
-                        <label for="star1">★</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="dish-issues">¿Algún plato le pareció insípido, seco o poco atractivo?</label>
-                    <div class="radio-group">
-                        <input type="radio" id="dish-issues-yes" name="dish-issues" value="si">
-                        <label for="dish-issues-yes">Sí</label>
-                        <input type="radio" id="dish-issues-no" name="dish-issues" value="no">
-                        <label for="dish-issues-no">No</label>
-                    </div>
-                </div>
-
-                <div class="form-group conditional-group" id="dish-details-group" style="display: none;">
-                    <label for="dish-details">¿Podría especificar cuál?</label>
-                    <textarea id="dish-details" name="dish-details" rows="3"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="menu-variety">¿Encontró variedad suficiente en el menú?</label>
-                    <div class="radio-group">
-                        <input type="radio" id="menu-variety-yes" name="menu-variety" value="si">
-                        <label for="menu-variety-yes">Sí</label>
-                        <input type="radio" id="menu-variety-no" name="menu-variety" value="no">
-                        <label for="menu-variety-no">No</label>
-                    </div>
-                </div>
-
-                <div class="form-group conditional-group" id="menu-suggestions-group" style="display: none;">
-                    <label for="menu-suggestions">¿Qué tipo de opciones le gustaría ver?</label>
-                    <textarea id="menu-suggestions" name="menu-suggestions" rows="3"></textarea>
-                </div>
-            </section>
-
-            <!-- Sección 3: Servicio y Atención -->
-            <section class="form-section" id="service">
-                <h2>Servicio y Atención</h2>
-
-                <div class="form-group">
-                    <label for="wait-time-seat">¿Cuánto tiempo tardaron en atenderle después de sentarse?</label>
-                    <select id="wait-time-seat" name="wait-time-seat" required>
-                        <option value="">Seleccione una opción</option>
-                        <option value="menos-5">Menos de 5 min</option>
-                        <option value="5-10">5-10 min</option>
-                        <option value="mas-10">Más de 10 min</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="wait-time-food">¿Cuánto tiempo tardó su comida en llegar después de ordenar?</label>
-                    <select id="wait-time-food" name="wait-time-food" required>
-                        <option value="">Seleccione una opción</option>
-                        <option value="menos-15">Menos de 15 min</option>
-                        <option value="15-30">15-30 min</option>
-                        <option value="mas-30">Más de 30 min</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="staff-friendliness">¿Cómo calificaría la amabilidad y disposición del personal?</label>
-                    <div class="star-rating">
-                        <input type="radio" id="staff5" name="staff-friendliness" value="5" required>
-                        <label for="staff5">★</label>
-                        <input type="radio" id="staff4" name="staff-friendliness" value="4">
-                        <label for="staff4">★</label>
-                        <input type="radio" id="staff3" name="staff-friendliness" value="3">
-                        <label for="staff3">★</label>
-                        <input type="radio" id="staff2" name="staff-friendliness" value="2">
-                        <label for="staff2">★</label>
-                        <input type="radio" id="staff1" name="staff-friendliness" value="1">
-                        <label for="staff1">★</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="service-issues">¿Hubo algún momento en el que sintió que el servicio no fue adecuado?</label>
-                    <div class="radio-group">
-                        <input type="radio" id="service-issues-yes" name="service-issues" value="si">
-                        <label for="service-issues-yes">Sí</label>
-                        <input type="radio" id="service-issues-no" name="service-issues" value="no">
-                        <label for="service-issues-no">No</label>
-                    </div>
-                </div>
-
-                <div class="form-group conditional-group" id="service-details-group" style="display: none;">
-                    <label for="service-details">¿Podría describir qué ocurrió?</label>
-                    <textarea id="service-details" name="service-details" rows="3"></textarea>
-                </div>
-            </section>
-
-            <!-- Sección 4: Limpieza y Ambiente -->
-            <section class="form-section" id="cleanliness">
-                <h2>Limpieza y Ambiente</h2>
-
-                <div class="form-group">
-                    <label for="cleanliness-rating">¿Cómo encontró la limpieza del restaurante?</label>
-                    <select id="cleanliness-rating" name="cleanliness-rating" required>
-                        <option value="">Seleccione una opción</option>
-                        <option value="muy-limpio">Muy limpio</option>
-                        <option value="aceptable">Aceptable</option>
-                        <option value="necesita-mejorar">Necesita mejorar</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="ambience">¿El ambiente y la música fueron agradables?</label>
-                    <div class="radio-group">
-                        <input type="radio" id="ambience-yes" name="ambience" value="si">
-                        <label for="ambience-yes">Sí</label>
-                        <input type="radio" id="ambience-no" name="ambience" value="no">
-                        <label for="ambience-no">No</label>
-                    </div>
-                </div>
-
-                <div class="form-group conditional-group" id="ambience-improvement-group" style="display: none;">
-                    <label for="ambience-improvement">¿Qué le gustaría mejorar?</label>
-                    <textarea id="ambience-improvement" name="ambience-improvement" rows="3"></textarea>
-                </div>
-            </section>
-
-            <!-- Sección 5: Quejas y Mejoras -->
-            <section class="form-section" id="complaints">
-                <h2>Quejas y Mejoras</h2>
-
-                <div class="form-group">
-                    <label for="single-improvement">Si pudiera cambiar una sola cosa en su experiencia, ¿qué sería?</label>
-                    <textarea id="single-improvement" name="single-improvement" rows="3" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="previous-issues">¿Ha tenido experiencias negativas en el restaurante anteriormente?</label>
-                    <div class="radio-group">
-                        <input type="radio" id="previous-issues-yes" name="previous-issues" value="si">
-                        <label for="previous-issues-yes">Sí</label>
-                        <input type="radio" id="previous-issues-no" name="previous-issues" value="no">
-                        <label for="previous-issues-no">No</label>
-                    </div>
-                </div>
-
-                <div class="form-group conditional-group" id="previous-issues-details-group" style="display: none;">
-                    <label for="previous-issues-details">¿Qué aspectos se repitieron?</label>
-                    <textarea id="previous-issues-details" name="previous-issues-details" rows="3"></textarea>
-                </div>
-            </section>
-
-            <button type="submit" class="submit-button">Enviar Encuesta</button>
-        </form>
-
-        <!-- Modal for additional information -->
-        <div class="modal fade" id="guestInfoModal" tabindex="-1" aria-labelledby="guestInfoModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="guestInfoModalLabel">Información del Huésped</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="guestInfoForm">
-                    <div class="form-group">
-                        <label for="restaurant-select">Selección de restaurante*</label>
-                        <select id="restaurant-select" name="restaurant-select" required>
-                            <option value="">Seleccione un restaurante</option>
-                            <option value="ALT">ALT</option>
-                            <option value="Sopiro">Sopiro</option>
-                            <option value="ChezRose">ChezRose</option>
-                            <option value="Seishin">Seishin</option>
-                            <option value="Huzur">Huzur</option>
-                            <option value="Miraflores">Miraflores</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="room-number">Número de habitación*</label>
-                        <input type="number" id="room-number" name="room-number" min="1" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="guest-name">Nombre del huésped*</label>
-                        <input type="text" id="guest-name" name="guest-name" required>
-                    </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary">Confirmar</button>
-                        </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+    <main>
+        <h2>Agregar Nueva Reserva</h2>
+        <p>Gestionando reservas para hoy, 17 de junio de 2025.</p>
+        <div class="form-group">
+            <label for="room">Room:</label>
+            <input type="text" id="room" required>
         </div>
-    </div>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+            <label for="restaurant">Restaurante:</label>
+            <select id="restaurant" required>
+                <option value="">Selecciona un restaurante</option>
+                <option value="El Patio">El Patio</option>
+                <option value="Olio">Olio</option>
+                <option value="Bluewater">Bluewater</option>
+                <option value="Bordeaux">Bordeaux</option>
+                <option value="Himitsu">Himitsu</option>
+                <option value="Hibachi">Hibachi</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="time">Time:</label>
+            <select id="time" required disabled>
+                <option value="">Selecciona un horario</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="pax">Pax:</label>
+            <input type="number" id="pax" min="1" required>
+        </div>
+        <div class="form-group">
+            <label for="notes">Notes (Opcional):</label>
+            <textarea id="notes" rows="3"></textarea>
+        </div>
+        <button id="addBookingBtn">Agregar Reserva</button>
+        <button id="clearFormBtn">Limpiar Campos</button>
+        <p id="message"></p>
+    </main>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="app.js"></script>
+    <footer>
+        <p>Gestionando reservas para hoy, 17 de junio de 2025.</p>
+    </footer>
+
+    <script>
+        // Configuración de Firebase (REEMPLAZA CON TUS PROPIAS CREDENCIALES)
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_PROYECTO.firebaseapp.com",
+            databaseURL: "https://TU_PROYECTO-default-rtdb.firebaseio.com",
+            projectId: "TU_PROYECTO",
+            storageBucket: "TU_PROYECTO.appspot.com",
+            messagingSenderId: "TU_SENDER_ID",
+            appId: "TU_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const bookingsRef = database.ref('bookings'); // Nodo donde se guardarán las reservas
+
+        // Definir los restaurantes y sus horarios
+        const RESTAURANTS = {
+            "El Patio": ["18:00", "21:00"],
+            "Olio": ["18:00", "21:00"],
+            "Bluewater": ["18:00", "21:00"],
+            "Bordeaux": ["18:00", "21:00"],
+            "Himitsu": ["18:00", "21:00"],
+            "Hibachi": ["17:30", "18:45", "20:00", "21:15"]
+        };
+
+        // Referencias a elementos del DOM
+        const restaurantSelect = document.getElementById('restaurant');
+        const timeSelect = document.getElementById('time');
+        const addBookingBtn = document.getElementById('addBookingBtn');
+        const clearFormBtn = document.getElementById('clearFormBtn');
+        const messageElement = document.getElementById('message');
+
+        // Lógica para actualizar las horas según el restaurante seleccionado
+        restaurantSelect.addEventListener('change', () => {
+            const selectedRestaurant = restaurantSelect.value;
+            timeSelect.innerHTML = '<option value="">Selecciona un horario</option>'; // Limpiar opciones anteriores
+            if (selectedRestaurant) {
+                RESTAURANTS[selectedRestaurant].forEach(time => {
+                    const option = document.createElement('option');
+                    option.value = time;
+                    option.textContent = time;
+                    timeSelect.appendChild(option);
+                });
+                timeSelect.disabled = false;
+            } else {
+                timeSelect.disabled = true;
+            }
+        });
+
+        // Lógica para agregar reserva
+        addBookingBtn.addEventListener('click', async () => {
+            const room = document.getElementById('room').value.trim();
+            const name = document.getElementById('name').value.trim();
+            const restaurant = restaurantSelect.value;
+            const time = timeSelect.value;
+            const pax = parseInt(document.getElementById('pax').value);
+            const notes = document.getElementById('notes').value.trim();
+
+            if (!room || !name || !restaurant || !time || isNaN(pax) || pax < 1) {
+                messageElement.textContent = 'Por favor, completa todos los campos requeridos y asegúrate que Pax sea un número válido.';
+                messageElement.className = 'error';
+                return;
+            }
+
+            const newBooking = {
+                room,
+                name,
+                restaurant,
+                time,
+                pax,
+                notes: notes || 'N/A', // Si no hay notas, guarda 'N/A'
+                timestamp: firebase.database.ServerValue.TIMESTAMP // Para orden FIFO
+            };
+
+            try {
+                await bookingsRef.push(newBooking); // 'push' asegura un ID único y orden FIFO por timestamp
+                messageElement.textContent = 'Reserva agregada con éxito.';
+                messageElement.className = 'success';
+                // Limpiar el formulario
+                document.getElementById('room').value = '';
+                document.getElementById('name').value = '';
+                restaurantSelect.value = '';
+                timeSelect.innerHTML = '<option value="">Selecciona un horario</option>';
+                timeSelect.disabled = true;
+                document.getElementById('pax').value = '';
+                document.getElementById('notes').value = '';
+            } catch (error) {
+                messageElement.textContent = `Error al agregar reserva: ${error.message}`;
+                messageElement.className = 'error';
+                console.error("Error adding booking:", error);
+            }
+        });
+
+        // Lógica para limpiar formulario
+        clearFormBtn.addEventListener('click', () => {
+            document.getElementById('room').value = '';
+            document.getElementById('name').value = '';
+            restaurantSelect.value = '';
+            timeSelect.innerHTML = '<option value="">Selecciona un horario</option>';
+            timeSelect.disabled = true;
+            document.getElementById('pax').value = '';
+            document.getElementById('notes').value = '';
+            messageElement.textContent = '';
+        });
+    </script>
 </body>
 </html>
