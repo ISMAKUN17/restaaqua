@@ -3,103 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Nueva Reserva - Gestión de Reservas</title>
+    <title>Agregar Reserva - Reservas Minimal</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-        /* Estilos CSS para esta página */
+        /* Variables CSS para una paleta de colores limpia */
+        :root {
+            --primary-bg: #ffffff;
+            --secondary-bg: #f8f8f8;
+            --text-color: #333333;
+            --light-text: #777777;
+            --border-color: #e0e0e0;
+            --accent-color: #00796B; /* Muted Teal */
+            --accent-color-dark: #004d40;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
+            background-color: var(--secondary-bg);
+            color: var(--text-color);
+            line-height: 1.6;
         }
 
         header {
-            background-color: #333;
-            color: white;
-            padding: 1em 0;
+            background-color: var(--accent-color);
+            color: var(--primary-bg);
+            padding: 1.5em 0;
             text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0 0 0.5em;
+            font-size: 1.8em;
+            font-weight: 600;
         }
 
         nav ul {
             list-style: none;
             padding: 0;
-        }
-
-        nav ul li {
-            display: inline;
-            margin: 0 15px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
         }
 
         nav ul li a {
-            color: white;
+            color: var(--primary-bg);
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 500;
+            padding: 5px 10px;
+            transition: background-color 0.3s ease, border-radius 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            border-bottom: 2px solid var(--primary-bg);
         }
 
         main {
-            padding: 20px;
-            max-width: 600px; /* Ancho más pequeño para formulario */
-            margin: 20px auto;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: var(--primary-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        main h2 {
+            font-size: 1.8em;
+            color: var(--accent-color-dark);
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        main p {
+            text-align: center;
+            color: var(--light-text);
+            margin-bottom: 25px;
+            font-size: 0.95em;
         }
 
         footer {
             text-align: center;
-            padding: 1em 0;
-            color: #777;
-            font-size: 0.9em;
+            padding: 1.5em 0;
+            color: var(--light-text);
+            font-size: 0.85em;
         }
 
+        /* Form specific styles */
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 0.95em;
         }
 
         .form-group input[type="text"],
         .form-group input[type="number"],
         .form-group select,
         .form-group textarea {
-            width: calc(100% - 22px); /* Ajuste para padding y border */
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box; /* Incluye padding y border en el ancho total */
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1em;
+            color: var(--text-color);
+            background-color: var(--primary-bg);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="number"]:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(0, 121, 107, 0.2); /* Soft shadow for focus */
+            outline: none;
+        }
+
+        .form-group textarea {
+            resize: vertical; /* Allow vertical resizing */
+            min-height: 80px;
         }
 
         button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
+            background-color: var(--accent-color);
+            color: var(--primary-bg);
+            padding: 12px 25px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 1em;
-            margin-right: 10px;
+            font-weight: 600;
+            margin-right: 15px;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: var(--accent-color-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        button#clearFormBtn {
+            background-color: var(--border-color);
+            color: var(--text-color);
+        }
+
+        button#clearFormBtn:hover {
+            background-color: #d0d0d0;
         }
 
         #message {
-            margin-top: 10px;
-            font-weight: bold;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+            opacity: 0; /* Hidden by default */
+            transform: translateY(10px);
+        }
+        #message.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
         .success {
-            color: green;
+            background-color: #d4edda;
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
         }
         .error {
-            color: red;
+            background-color: #f8d7da;
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            main {
+                margin: 20px 15px;
+                padding: 20px;
+            }
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+            nav ul li {
+                margin: 0;
+            }
+            button {
+                display: block;
+                width: 100%;
+                margin-bottom: 10px;
+                margin-right: 0;
+            }
         }
     </style>
 </head>
@@ -108,23 +226,23 @@
         <h1>Sistema de Reservas</h1>
         <nav>
             <ul>
-                <li><a href="add_booking.html">Agregar Reserva</a></li>
-                <li><a href="view_bookings.html">Ver Reservas</a></li>
-                <li><a href="admin_bookings.html">Administrador</a></li>
+                <li><a href="add_booking_minimal.html">Agregar Reserva</a></li>
+                <li><a href="view_bookings_minimal.html">Ver Reservas</a></li>
+                <li><a href="admin_bookings_minimal.html">Administrador</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
         <h2>Agregar Nueva Reserva</h2>
-        <p>Gestionando reservas para hoy, 17 de junio de 2025.</p>
+        <p>Gestionando reservas para hoy, 17 de junio de 2025, en Punta Cana.</p>
         <div class="form-group">
-            <label for="room">Room:</label>
-            <input type="text" id="room" required>
+            <label for="room">Número de Habitación:</label>
+            <input type="text" id="room" placeholder="Ej. 1234" required>
         </div>
         <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" required>
+            <label for="name">Nombre del Cliente:</label>
+            <input type="text" id="name" placeholder="Ej. Juan Pérez" required>
         </div>
         <div class="form-group">
             <label for="restaurant">Restaurante:</label>
@@ -139,18 +257,18 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="time">Time:</label>
+            <label for="time">Hora de la Reserva:</label>
             <select id="time" required disabled>
                 <option value="">Selecciona un horario</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="pax">Pax:</label>
-            <input type="number" id="pax" min="1" required>
+            <label for="pax">Número de Personas (Pax):</label>
+            <input type="number" id="pax" min="1" placeholder="Mínimo 1" required>
         </div>
         <div class="form-group">
-            <label for="notes">Notes (Opcional):</label>
-            <textarea id="notes" rows="3"></textarea>
+            <label for="notes">Notas (Opcional):</label>
+            <textarea id="notes" rows="3" placeholder="Ej. Alergia a nueces, Cumpleaños"></textarea>
         </div>
         <button id="addBookingBtn">Agregar Reserva</button>
         <button id="clearFormBtn">Limpiar Campos</button>
@@ -158,7 +276,7 @@
     </main>
 
     <footer>
-        <p>Gestionando reservas para hoy, 17 de junio de 2025.</p>
+        <p>Sistema de Reservas &copy; 2025. Todos los derechos reservados.</p>
     </footer>
 
     <script>
@@ -174,7 +292,7 @@
         };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        const bookingsRef = database.ref('bookings'); // Nodo donde se guardarán las reservas
+        const bookingsRef = database.ref('bookings');
 
         // Definir los restaurantes y sus horarios
         const RESTAURANTS = {
@@ -193,11 +311,20 @@
         const clearFormBtn = document.getElementById('clearFormBtn');
         const messageElement = document.getElementById('message');
 
+        // Función para mostrar mensajes
+        function showMessage(msg, type) {
+            messageElement.textContent = msg;
+            messageElement.className = `visible ${type}`; // Add visible class for transition
+            setTimeout(() => {
+                messageElement.className = ''; // Hide after a few seconds
+            }, 5000);
+        }
+
         // Lógica para actualizar las horas según el restaurante seleccionado
         restaurantSelect.addEventListener('change', () => {
             const selectedRestaurant = restaurantSelect.value;
-            timeSelect.innerHTML = '<option value="">Selecciona un horario</option>'; // Limpiar opciones anteriores
-            if (selectedRestaurant) {
+            timeSelect.innerHTML = '<option value="">Selecciona un horario</option>';
+            if (selectedRestaurant && RESTAURANTS[selectedRestaurant]) {
                 RESTAURANTS[selectedRestaurant].forEach(time => {
                     const option = document.createElement('option');
                     option.value = time;
@@ -220,8 +347,7 @@
             const notes = document.getElementById('notes').value.trim();
 
             if (!room || !name || !restaurant || !time || isNaN(pax) || pax < 1) {
-                messageElement.textContent = 'Por favor, completa todos los campos requeridos y asegúrate que Pax sea un número válido.';
-                messageElement.className = 'error';
+                showMessage('Por favor, completa todos los campos requeridos y asegúrate que Pax sea un número válido.', 'error');
                 return;
             }
 
@@ -231,14 +357,13 @@
                 restaurant,
                 time,
                 pax,
-                notes: notes || 'N/A', // Si no hay notas, guarda 'N/A'
-                timestamp: firebase.database.ServerValue.TIMESTAMP // Para orden FIFO
+                notes: notes || 'N/A',
+                timestamp: firebase.database.ServerValue.TIMESTAMP
             };
 
             try {
-                await bookingsRef.push(newBooking); // 'push' asegura un ID único y orden FIFO por timestamp
-                messageElement.textContent = 'Reserva agregada con éxito.';
-                messageElement.className = 'success';
+                await bookingsRef.push(newBooking);
+                showMessage('Reserva agregada con éxito.', 'success');
                 // Limpiar el formulario
                 document.getElementById('room').value = '';
                 document.getElementById('name').value = '';
@@ -248,8 +373,7 @@
                 document.getElementById('pax').value = '';
                 document.getElementById('notes').value = '';
             } catch (error) {
-                messageElement.textContent = `Error al agregar reserva: ${error.message}`;
-                messageElement.className = 'error';
+                showMessage(`Error al agregar reserva: ${error.message}`, 'error');
                 console.error("Error adding booking:", error);
             }
         });
@@ -264,6 +388,7 @@
             document.getElementById('pax').value = '';
             document.getElementById('notes').value = '';
             messageElement.textContent = '';
+            messageElement.className = ''; // Remove status classes
         });
     </script>
 </body>
