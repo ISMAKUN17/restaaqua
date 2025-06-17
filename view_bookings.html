@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Reservas Agregadas - Gestión de Reservas</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        /* Estilos CSS para esta página */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1em 0;
+            color: #777;
+            font-size: 0.9em;
+        }
+
+        .filters {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap; /* Para pantallas pequeñas */
+        }
+
+        .filters label {
+            font-weight: bold;
+        }
+
+        .filters select, .filters input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 150px;
+        }
+
+        /* Estilos de reporte/lista de reservas */
+        .report-section {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+        }
+
+        .report-section:first-of-type {
+            border-top: none; /* No hay línea superior para la primera sección */
+            padding-top: 0;
+            margin-top: 0;
+        }
+
+        .report-section h3 {
+            margin-bottom: 10px;
+            color: #0056b3;
+        }
+
+        .report-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .report-section li {
+            background-color: #e9e9e9;
+            margin-bottom: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            word-wrap: break-word; /* Para notas largas */
+        }
+
+        .restaurant-total {
+            font-weight: bold;
+            margin-top: 5px;
+            display: block;
+            color: #28a745;
+        }
+
+        .no-bookings-message {
+            color: #666;
+            text-align: center;
+            padding: 20px;
+            border: 1px dashed #ccc;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Sistema de Reservas</h1>
+        <nav>
+            <ul>
+                <li><a href="add_booking.html">Agregar Reserva</a></li>
+                <li><a href="view_bookings.html">Ver Reservas</a></li>
+                <li><a href="admin_bookings.html">Administrador</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Reservas del Día</h2>
+        <p>Visualizando reservas para hoy, 17 de junio de 2025.</p>
+        <div class="filters">
+            <label for="filterRestaurant">Filtrar por Restaurante:</label>
+            <select id="filterRestaurant">
+                <option value="">Todos</option>
+                <option value="El Patio">El Patio</option>
+                <option value="Olio">Olio</option>
+                <option value="Bluewater">Bluewater</option>
+                <option value="Bordeaux">Bordeaux</option>
+                <option value="Himitsu">Himitsu</option>
+                <option value="Hibachi">Hibachi</option>
+            </select>
+            <label for="searchQuery">Buscar (Nombre/Room):</label>
+            <input type="text" id="searchQuery" placeholder="Buscar...">
+        </div>
+        <div id="bookingsList">
+            <p class="no-bookings-message">Cargando reservas...</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>Gestionando reservas para hoy, 17 de junio de 2025.</p>
+    </footer>
+
+    <script>
+        // Configuración de Firebase (REEMPLAZA CON TUS PROPIAS CREDENCIALES)
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_PROYECTO.firebaseapp.com",
+            databaseURL: "https://TU_PROYECTO-default-rtdb.firebaseio.com",
+            projectId: "TU_PROYECTO",
+            storageBucket: "TU_PROYECTO.appspot.com",
+            messagingSenderId: "TU_SENDER_ID",
+            appId: "TU_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const bookingsRef = database.ref('bookings');
+
+        const RESTAURANTS = {
+            "El Patio": ["18:00", "21:00"],
+            "Olio": ["18:00", "21:00"],
+            "Bluewater": ["18:00", "21:00"],
+            "Bordeaux": ["18:00", "21:00"],
+            "Himitsu": ["18:00", "21:00"],
+            "Hibachi": ["17:30", "18:45", "20:00", "21:15"]
+        };
+
+        // Referencias a elementos del DOM
+        const bookingsListDiv = document.getElementById('bookingsList');
+        const filterRestaurantSelect = document.getElementById('filterRestaurant');
+        const searchQueryInput = document.getElementById('searchQuery');
+
+        let allBookings = {}; // Para guardar todas las reservas cargadas
+
+        const renderBookings = () => {
+            let filteredBookings = Object.values(allBookings); // Convertir objeto de objetos a array de objetos para filtrar
+
+            // Filtrar por restaurante
+            if (filterRestaurantSelect.value) {
+                filteredBookings = filteredBookings.filter(booking => booking.restaurant === filterRestaurantSelect.value);
+            }
+
+            // Buscar por nombre o room
+            const query = searchQueryInput.value.toLowerCase().trim();
+            if (query) {
+                filteredBookings = filteredBookings.filter(booking =>
+                    (booking.name && booking.name.toLowerCase().includes(query)) ||
+                    (booking.room && booking.room.toLowerCase().includes(query))
+                );
+            }
+
+            // Agrupar por restaurante y ordenar por hora para mostrar
+            const groupedBookings = {};
+            Object.keys(RESTAURANTS).forEach(r => groupedBookings[r] = []); // Asegurar que todos los restaurantes estén en el objeto
+
+            filteredBookings.forEach(booking => {
+                if (groupedBookings[booking.restaurant]) { // Asegurarse de que el restaurante existe en RESTAURANTS
+                    groupedBookings[booking.restaurant].push(booking);
+                }
+            });
+
+            // Ordenar las reservas dentro de cada restaurante por hora
+            Object.keys(groupedBookings).forEach(restaurantName => {
+                groupedBookings[restaurantName].sort((a, b) => {
+                    return a.time.localeCompare(b.time); // Comparar horas (ej. "18:00" vs "21:00")
+                });
+            });
+
+            let htmlContent = '';
+            if (filteredBookings.length === 0) {
+                htmlContent = '<p class="no-bookings-message">No hay reservas para mostrar con los filtros actuales.</p>';
+            } else {
+                Object.keys(groupedBookings).forEach(restaurantName => {
+                    const bookingsForRestaurant = groupedBookings[restaurantName];
+                    if (bookingsForRestaurant.length > 0) {
+                        htmlContent += `<div class="report-section">`;
+                        htmlContent += `<h3>--- ${restaurantName} ---</h3>`;
+                        htmlContent += `<ul>`;
+                        bookingsForRestaurant.forEach(booking => {
+                            htmlContent += `<li>${booking.time} - ${booking.pax} pax - ${booking.name} (${booking.room || 'N/A'}) - Notas: ${booking.notes || 'N/A'}</li>`;
+                        });
+                        const totalPax = bookingsForRestaurant.reduce((sum, booking) => sum + (booking.pax || 0), 0);
+                        htmlContent += `</ul>`;
+                        htmlContent += `<span class="restaurant-total">Total Pax ${restaurantName}: ${totalPax}</span>`;
+                        htmlContent += `</div>`;
+                    }
+                });
+            }
+            bookingsListDiv.innerHTML = htmlContent;
+        };
+
+        // Escuchar cambios en la base de datos de Firebase
+        bookingsRef.on('value', (snapshot) => {
+            allBookings = snapshot.val() || {}; // Obtener todas las reservas como un objeto
+            renderBookings(); // Volver a renderizar cada vez que los datos cambian
+        }, (error) => {
+            console.error("Error al cargar reservas:", error);
+            bookingsListDiv.innerHTML = '<p class="no-bookings-message" style="color: red;">Error al cargar reservas. Por favor, inténtalo de nuevo más tarde.</p>';
+        });
+
+        // Event listeners para filtros
+        filterRestaurantSelect.addEventListener('change', renderBookings);
+        searchQueryInput.addEventListener('input', renderBookings);
+    </script>
+</body>
+</html>
